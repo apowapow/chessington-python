@@ -6,6 +6,7 @@ this is just a "dumb" board that will let you move pieces around as you like.
 from chessington.engine.data import Player, Square
 from chessington.engine.pieces import Pawn, Knight, Bishop, Rook, Queen, King
 
+
 BOARD_SIZE = 8
 
 class Board:

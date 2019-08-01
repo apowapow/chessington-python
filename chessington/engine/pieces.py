@@ -7,7 +7,11 @@ from abc import ABC, abstractmethod
 from chessington.engine.data import Player, Square
 
 
+BOARD_SIZE = 8
+
+
 class Piece(ABC):
+
     """
     An abstract base class from which all pieces inherit.
     """
@@ -16,9 +20,12 @@ class Piece(ABC):
         self.player = player
         self.moved = False
 
+
     def check_empty_square(self, square, board):
         return board.get_piece(square) is None
 
+    def within_boundaries(self, square):
+        return 0 <= square.row < BOARD_SIZE and 0 <= square.col < BOARD_SIZE
 
 
     @abstractmethod
@@ -49,13 +56,13 @@ class Pawn(Piece):
 
         sq_one = Square.at(pos.row + 1 if white else pos.row - 1, pos.col)
 
-        if self.check_empty_square(sq_one, board):
+        if self.within_boundaries(sq_one) and self.check_empty_square(sq_one, board):
             moves.append(sq_one)
 
             if not self.moved:
                 sq_two = Square.at(pos.row + 2 if white else pos.row - 2, pos.col)
 
-                if self.check_empty_square(sq_two, board):
+                if self.within_boundaries(sq_one) and self.check_empty_square(sq_two, board):
                     moves.append(sq_two)
 
         return moves
