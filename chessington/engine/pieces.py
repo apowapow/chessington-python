@@ -20,13 +20,15 @@ class Piece(ABC):
         self.player = player
         self.moved = False
 
-
     def check_empty_square(self, square, board):
         return board.get_piece(square) is None
 
     def within_boundaries(self, square):
         return 0 <= square.row < BOARD_SIZE and 0 <= square.col < BOARD_SIZE
 
+    def has_opposite_colour(self, square, board):
+        piece = board.get_piece(square)
+        return piece is not None and piece.player != self.player
 
     @abstractmethod
     def get_available_moves(self, board):
@@ -54,6 +56,7 @@ class Pawn(Piece):
         white = self.player == Player.WHITE
         pos = board.find_piece(self)
 
+        # in front
         sq_one = Square.at(pos.row + 1 if white else pos.row - 1, pos.col)
 
         if self.within_boundaries(sq_one) and self.check_empty_square(sq_one, board):
@@ -64,6 +67,16 @@ class Pawn(Piece):
 
                 if self.within_boundaries(sq_one) and self.check_empty_square(sq_two, board):
                     moves.append(sq_two)
+
+        # diagonal
+        sq_left = Square.at(pos.row + 1 if white else pos.row - 1, pos.col - 1)
+        sq_right = Square.at(pos.row + 1 if white else pos.row - 1, pos.col + 1)
+
+        if self.within_boundaries(sq_left) and self.has_opposite_colour(sq_left, board):
+            moves.append(sq_left)
+
+        if self.within_boundaries(sq_right) and self.has_opposite_colour(sq_right, board):
+            moves.append(sq_right)
 
         return moves
 
