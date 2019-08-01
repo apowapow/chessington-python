@@ -16,6 +16,11 @@ class Piece(ABC):
         self.player = player
         self.moved = False
 
+    def check_empty_square(self, square, board):
+        return board.get_piece(square) is None
+
+
+
     @abstractmethod
     def get_available_moves(self, board):
         """
@@ -42,10 +47,16 @@ class Pawn(Piece):
         white = self.player == Player.WHITE
         pos = board.find_piece(self)
 
-        moves.append(Square.at(pos.row + 1 if white else pos.row - 1, pos.col))
+        sq_one = Square.at(pos.row + 1 if white else pos.row - 1, pos.col)
 
-        if not self.moved:
-            moves.append(Square.at(pos.row + 2 if white else pos.row - 2, pos.col))
+        if self.check_empty_square(sq_one, board):
+            moves.append(sq_one)
+
+            if not self.moved:
+                sq_two = Square.at(pos.row + 2 if white else pos.row - 2, pos.col)
+
+                if self.check_empty_square(sq_two, board):
+                    moves.append(sq_two)
 
         return moves
 
