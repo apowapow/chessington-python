@@ -22,3 +22,8 @@ pip-log.txt
 .idea/*
 .python-version
 .vscode/*
+
+.DS_Store
+.idea
+venv
+__pycache__
