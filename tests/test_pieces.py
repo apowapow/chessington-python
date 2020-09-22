@@ -354,3 +354,41 @@ class TestPawns:
         assert Square.at(0, 7) in moves  # bottom-right
         assert Square.at(7, 0) in moves  # top-left
         assert Square.at(0, 1) in moves  # bottom-left
+
+    @staticmethod
+    def test_bishop_move_unobstructed_out_of_bounds():
+
+        # Arrange
+        board = Board.empty()
+        bishop = Bishop(Player.BLACK)
+        bishop_square = Square.at(3, 4)
+        board.set_piece(bishop_square, bishop)
+
+        # Act
+        moves = bishop.get_available_moves(board)
+
+        # Assert
+        assert Square.at(8, 9) not in moves  # top-right
+        assert Square.at(-2, 9) not in moves  # bottom-right
+        assert Square.at(9, -2) not in moves  # top-left
+        assert Square.at(-2, -1) not in moves  # bottom-left
+
+    @staticmethod
+    def test_bishop_move_obstructed_same_colour_piece():
+        # Arrange
+        board = Board.empty()
+        bishop = Bishop(Player.BLACK)
+        bishop_square = Square.at(3, 4)
+        board.set_piece(bishop_square, bishop)
+
+        friendly = Pawn(Player.BLACK)
+        friendly_square = Square.at(5, 6)
+        board.set_piece(friendly_square, friendly)
+
+        # Act
+        moves = bishop.get_available_moves(board)
+
+        # Assert
+        assert Square.at(4, 5) in moves
+        assert Square.at(5, 6) not in moves
+        assert Square.at(6, 7) not in moves

@@ -28,10 +28,15 @@ class Piece(ABC):
             if piece is None:
                 if empty:
                     squarelist.append(square)
+                    return False  # empty square is not obstruction
 
-            elif piece.player != self.player:
-                if takeable:
-                    squarelist.append(square)
+            else:
+                if piece.player != self.player:
+                    if takeable:
+                        squarelist.append(square)
+                return True  # any colour is obstruction
+        else:
+            return True  # walls of board are also obstructions
 
     @abstractmethod
     def get_available_moves(self, board):
@@ -119,12 +124,15 @@ class Bishop(Piece):
             step = 1 if d[0] else -1
 
             for next_row in range(next_row_init, next_row_end, step):
-                self.maybe_add_square(
+                obstruction = self.maybe_add_square(
                     squarelist=moves,
                     square=Square.at(next_row, next_col),
                     board=board,
                     empty=True,
                     takeable=True)
+
+                if obstruction:
+                    break
 
                 next_col = next_col + 1 if d[1] else next_col - 1
 
