@@ -38,6 +38,48 @@ class Piece(ABC):
         else:
             return True  # walls of board are also obstructions
 
+    def get_diagonal(self, squarelist, square, board):
+        direction = [(True, True), (False, True), (False, False), (True, False)]
+
+        for d in direction:
+            next_col = square.col + 1 if d[1] else square.col - 1
+            next_row_init = square.row + 1 if d[0] else square.row - 1
+            next_row_end = BOARD_MAX + 1 if d[0] else BOARD_MIN - 1
+            step = 1 if d[0] else -1
+
+            for next_row in range(next_row_init, next_row_end, step):
+                obstruction = self.maybe_add_square(
+                    squarelist=squarelist,
+                    square=Square.at(next_row, next_col),
+                    board=board,
+                    empty=True,
+                    takeable=True)
+
+                if obstruction:
+                    break
+
+                next_col = next_col + 1 if d[1] else next_col - 1
+
+    def get_lateral(self, squarelist, square, board):
+        config = [
+            (square.row + 1, BOARD_MAX + 1, 1, True),
+            (square.row - 1, BOARD_MIN - 1, -1, True),
+            (square.col + 1, BOARD_MAX + 1, 1, False),
+            (square.col - 1, BOARD_MIN - 1, -1, False)
+        ]
+
+        for c in config:
+            for n in range(c[0], c[1], c[2]):
+                obstruction = self.maybe_add_square(
+                    squarelist=squarelist,
+                    square=Square.at(n, square.col) if c[3] else Square.at(square.row, n),
+                    board=board,
+                    empty=True,
+                    takeable=True)
+
+                if obstruction:
+                    break
+
     @abstractmethod
     def get_available_moves(self, board):
         """
@@ -114,27 +156,7 @@ class Bishop(Piece):
 
     def get_available_moves(self, board):
         moves = []
-        direction = [(True, True), (False, True), (False, False), (True, False)]
-        pos = board.find_piece(self)
-
-        for d in direction:
-            next_col = pos.col + 1 if d[1] else pos.col - 1
-            next_row_init = pos.row + 1 if d[0] else pos.row - 1
-            next_row_end = BOARD_MAX + 1 if d[0] else BOARD_MIN - 1
-            step = 1 if d[0] else -1
-
-            for next_row in range(next_row_init, next_row_end, step):
-                obstruction = self.maybe_add_square(
-                    squarelist=moves,
-                    square=Square.at(next_row, next_col),
-                    board=board,
-                    empty=True,
-                    takeable=True)
-
-                if obstruction:
-                    break
-
-                next_col = next_col + 1 if d[1] else next_col - 1
+        self.get_diagonal(moves, board.find_piece(self), board)
 
         return moves
 
@@ -146,26 +168,7 @@ class Rook(Piece):
 
     def get_available_moves(self, board):
         moves = []
-        pos = board.find_piece(self)
-
-        config = [
-            (pos.row + 1, BOARD_MAX + 1, 1, True),
-            (pos.row - 1, BOARD_MIN - 1, -1, True),
-            (pos.col + 1, BOARD_MAX + 1, 1, False),
-            (pos.col - 1, BOARD_MIN - 1, -1, False)
-        ]
-
-        for c in config:
-            for n in range(c[0], c[1], c[2]):
-                obstruction = self.maybe_add_square(
-                    squarelist=moves,
-                    square=Square.at(n, pos.col) if c[3] else Square.at(pos.row, n),
-                    board=board,
-                    empty=True,
-                    takeable=True)
-
-                if obstruction:
-                    break
+        self.get_lateral(moves, board.find_piece(self), board)
 
         return moves
 
@@ -176,7 +179,12 @@ class Queen(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        moves = []
+        pos = board.find_piece(self)
+        self.get_diagonal(moves, pos, board)
+        self.get_lateral(moves, pos, board)
+
+        return moves
 
 
 class King(Piece):

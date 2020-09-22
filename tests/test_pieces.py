@@ -1,6 +1,6 @@
 from chessington.engine.board import Board
 from chessington.engine.data import Player, Square
-from chessington.engine.pieces import Pawn, Bishop, Rook
+from chessington.engine.pieces import Pawn, Bishop, Rook, Queen, King, Knight
 
 class TestPawns:
 
@@ -334,7 +334,6 @@ class TestPawns:
 
     @staticmethod
     def test_bishop_move_unobstructed():
-
         # Arrange
         board = Board.empty()
         bishop = Bishop(Player.BLACK)
@@ -495,3 +494,83 @@ class TestPawns:
         assert Square.at(6, 4) in moves
         assert Square.at(7, 4) not in moves
 
+    @staticmethod
+    def test_queen_move_unobstructed():
+        # Arrange
+        board = Board.empty()
+        queen = Queen(Player.BLACK)
+        queen_square = Square.at(3, 4)
+        board.set_piece(queen_square, queen)
+
+        # Act
+        moves = queen.get_available_moves(board)
+
+        # Assert
+        # diagonal, immediate
+        assert Square.at(4, 5) in moves  # top-right
+        assert Square.at(2, 5) in moves  # bottom-right
+        assert Square.at(4, 3) in moves  # top-left
+        assert Square.at(2, 3) in moves  # bottom-left
+
+        # diagonal, edge
+        assert Square.at(6, 7) in moves  # top-right
+        assert Square.at(0, 7) in moves  # bottom-right
+        assert Square.at(7, 0) in moves  # top-left
+        assert Square.at(0, 1) in moves  # bottom-left
+
+        # lateral, immediate
+        assert Square.at(4, 4) in moves  # up
+        assert Square.at(3, 5) in moves  # right
+        assert Square.at(2, 4) in moves  # down
+        assert Square.at(3, 3) in moves  # left
+
+        # lateral, edge
+        assert Square.at(7, 4) in moves  # up
+        assert Square.at(3, 7) in moves  # right
+        assert Square.at(0, 4) in moves  # down
+        assert Square.at(3, 0) in moves  # left
+
+
+    @staticmethod
+    def test_queen_move_unobstructed_out_of_bounds():
+        return True
+
+    @staticmethod
+    def test_queen_move_obstructed_same_colour_piece():
+        return True
+
+    @staticmethod
+    def test_queen_move_obstructed_opposite_colour_piece():
+        return True
+
+    @staticmethod
+    def test_king_move_unobstructed():
+        return True  # todo
+
+    @staticmethod
+    def test_king_move_unobstructed_out_of_bounds():
+        return True  # todo
+
+    @staticmethod
+    def test_king_move_obstructed_same_colour_piece():
+        return True  # todo
+
+    @staticmethod
+    def test_king_move_obstructed_opposite_colour_piece():
+        return True  # todo
+
+    @staticmethod
+    def test_knight_move_unobstructed():
+        return True  # todo
+
+    @staticmethod
+    def test_knight_move_unobstructed_out_of_bounds():
+        return True  # todo
+
+    @staticmethod
+    def test_knight_move_obstructed_same_colour_piece():
+        return True  # todo
+
+    @staticmethod
+    def test_knight_move_obstructed_opposite_colour_piece():
+        return True  # todo
