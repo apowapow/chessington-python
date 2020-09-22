@@ -145,7 +145,54 @@ class Rook(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        moves = []
+        pos = board.find_piece(self)
+
+        for next_row_up in range(pos.row + 1, BOARD_MAX + 1):
+            obstruction = self.maybe_add_square(
+                squarelist=moves,
+                square=Square.at(next_row_up, pos.col),
+                board=board,
+                empty=True,
+                takeable=True)
+
+            if obstruction:
+                break
+
+        for next_row_down in range(pos.row - 1, BOARD_MIN - 1, -1):
+            obstruction = self.maybe_add_square(
+                squarelist=moves,
+                square=Square.at(next_row_down, pos.col),
+                board=board,
+                empty=True,
+                takeable=True)
+
+            if obstruction:
+                break
+
+        for next_col_right in range(pos.col + 1, BOARD_MAX + 1):
+            obstruction = self.maybe_add_square(
+                squarelist=moves,
+                square=Square.at(pos.row, next_col_right),
+                board=board,
+                empty=True,
+                takeable=True)
+
+            if obstruction:
+                break
+
+        for next_col_left in range(pos.col - 1, BOARD_MIN - 1, -1):
+            obstruction = self.maybe_add_square(
+                squarelist=moves,
+                square=Square.at(pos.row, next_col_left),
+                board=board,
+                empty=True,
+                takeable=True)
+
+            if obstruction:
+                break
+
+        return moves
 
 
 class Queen(Piece):
