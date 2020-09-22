@@ -7,7 +7,8 @@ from abc import ABC, abstractmethod
 from chessington.engine.data import Player, Square
 
 
-BOARD_SIZE = 8
+BOARD_MAX = 7
+BOARD_MIN = 0
 
 
 class Piece(ABC):
@@ -20,12 +21,12 @@ class Piece(ABC):
         self.player = player
         self.moved = False
 
-    def maybe_add_square(self, squarelist, square, board, takeable):
-        if 0 <= square.row < BOARD_SIZE and 0 <= square.col < BOARD_SIZE:
+    def maybe_add_square(self, squarelist, square, board, empty, takeable):
+        if BOARD_MIN <= square.row <= BOARD_MAX and BOARD_MIN <= square.col <= BOARD_MAX:
             piece = board.get_piece(square)
 
             if piece is None:
-                if not takeable:
+                if empty:
                     squarelist.append(square)
 
             elif piece.player != self.player:
@@ -63,6 +64,7 @@ class Pawn(Piece):
             squarelist=moves,
             square=Square.at(pos.row + 1 if white else pos.row - 1, pos.col),
             board=board,
+            empty=True,
             takeable=False)
 
         if len(moves) == 1 and (not self.moved):
@@ -70,6 +72,7 @@ class Pawn(Piece):
                 squarelist=moves,
                 square=Square.at(pos.row + 2 if white else pos.row - 2, pos.col),
                 board=board,
+                empty=True,
                 takeable=False)
 
         # diagonal
@@ -77,12 +80,14 @@ class Pawn(Piece):
             squarelist=moves,
             square=Square.at(pos.row + 1 if white else pos.row - 1, pos.col - 1),
             board=board,
+            empty=False,
             takeable=True)
 
         self.maybe_add_square(
             squarelist=moves,
             square=Square.at(pos.row + 1 if white else pos.row - 1, pos.col + 1),
             board=board,
+            empty=False,
             takeable=True)
 
         return moves
@@ -103,7 +108,27 @@ class Bishop(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        moves = []
+        direction = [(True, True), (False, True), (False, False), (True, False)]
+        pos = board.find_piece(self)
+
+        for d in direction:
+            next_col = pos.col + 1 if d[1] else pos.col - 1
+            next_row_init = pos.row + 1 if d[0] else pos.row - 1
+            next_row_end = BOARD_MAX + 1 if d[0] else BOARD_MIN - 1
+            step = 1 if d[0] else -1
+
+            for next_row in range(next_row_init, next_row_end, step):
+                self.maybe_add_square(
+                    squarelist=moves,
+                    square=Square.at(next_row, next_col),
+                    board=board,
+                    empty=True,
+                    takeable=True)
+
+                next_col = next_col + 1 if d[1] else next_col - 1
+
+        return moves
 
 
 class Rook(Piece):

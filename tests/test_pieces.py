@@ -1,6 +1,6 @@
 from chessington.engine.board import Board
 from chessington.engine.data import Player, Square
-from chessington.engine.pieces import Pawn
+from chessington.engine.pieces import Pawn, Bishop
 
 class TestPawns:
 
@@ -331,3 +331,26 @@ class TestPawns:
         # Assert
         assert Square.at(2, 3) not in moves
         assert Square.at(2, 5) not in moves
+
+    @staticmethod
+    def test_bishop_move_unobstructed():
+
+        # Arrange
+        board = Board.empty()
+        bishop = Bishop(Player.BLACK)
+        bishop_square = Square.at(3, 4)
+        board.set_piece(bishop_square, bishop)
+
+        # Act
+        moves = bishop.get_available_moves(board)
+
+        # Assert
+        assert Square.at(4, 5) in moves  # top-right
+        assert Square.at(2, 5) in moves  # bottom-right
+        assert Square.at(4, 3) in moves  # top-left
+        assert Square.at(2, 3) in moves  # bottom-left
+
+        assert Square.at(6, 7) in moves  # top-right
+        assert Square.at(0, 7) in moves  # bottom-right
+        assert Square.at(7, 0) in moves  # top-left
+        assert Square.at(0, 1) in moves  # bottom-left
