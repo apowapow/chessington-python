@@ -32,7 +32,7 @@ class Piece(ABC):
 
             else:
                 if piece.player != self.player:
-                    if takeable:
+                    if takeable and (not isinstance(piece, King)):
                         squarelist.append(square)
                 return True  # any colour is obstruction
         else:
