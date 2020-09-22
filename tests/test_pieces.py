@@ -717,11 +717,41 @@ class TestPawns:
 
     @staticmethod
     def test_knight_move_unobstructed():
-        return True  # todo
+        # Arrange
+        board = Board.empty()
+        knight = Knight(Player.BLACK)
+        knight_square = Square.at(3, 4)
+        board.set_piece(knight_square, knight)
+
+        # Act
+        moves = knight.get_available_moves(board)
+
+        # Assert
+        assert Square.at(4, 2) in moves
+        assert Square.at(5, 3) in moves
+        assert Square.at(5, 5) in moves
+        assert Square.at(4, 6) in moves
+        assert Square.at(2, 6) in moves
+        assert Square.at(1, 5) in moves
+        assert Square.at(1, 3) in moves
+        assert Square.at(2, 2) in moves
+        assert len(moves) == 8
 
     @staticmethod
     def test_knight_move_unobstructed_out_of_bounds():
-        return True  # todo
+        # Arrange
+        board = Board.empty()
+        knight = Knight(Player.BLACK)
+        knight_square = Square.at(7, 7)
+        board.set_piece(knight_square, knight)
+
+        # Act
+        moves = knight.get_available_moves(board)
+
+        # Assert
+        assert Square.at(5, 6) in moves
+        assert Square.at(6, 5) in moves
+        assert len(moves) == 2
 
     @staticmethod
     def test_knight_move_obstructed_same_colour_piece():

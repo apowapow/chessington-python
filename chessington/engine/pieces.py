@@ -146,7 +146,29 @@ class Knight(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        moves = []
+        pos = board.find_piece(self)
+
+        config = [
+            (1, 2),
+            (1, -2),
+            (-1, 2),
+            (-1, -2),
+            (2, 1),
+            (2, -1),
+            (-2, 1),
+            (-2, -1),
+        ]
+
+        for row_offset, col_offset in config:
+            self.maybe_add_square(
+                squarelist=moves,
+                square=Square.at(pos.row + row_offset, pos.col + col_offset),
+                board=board,
+                empty=True,
+                takeable=True)
+
+        return moves
 
 
 class Bishop(Piece):
