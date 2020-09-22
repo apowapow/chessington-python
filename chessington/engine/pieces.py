@@ -148,49 +148,24 @@ class Rook(Piece):
         moves = []
         pos = board.find_piece(self)
 
-        for next_row_up in range(pos.row + 1, BOARD_MAX + 1):
-            obstruction = self.maybe_add_square(
-                squarelist=moves,
-                square=Square.at(next_row_up, pos.col),
-                board=board,
-                empty=True,
-                takeable=True)
+        config = [
+            (pos.row + 1, BOARD_MAX + 1, 1, True),
+            (pos.row - 1, BOARD_MIN - 1, -1, True),
+            (pos.col + 1, BOARD_MAX + 1, 1, False),
+            (pos.col - 1, BOARD_MIN - 1, -1, False)
+        ]
 
-            if obstruction:
-                break
+        for c in config:
+            for n in range(c[0], c[1], c[2]):
+                obstruction = self.maybe_add_square(
+                    squarelist=moves,
+                    square=Square.at(n, pos.col) if c[3] else Square.at(pos.row, n),
+                    board=board,
+                    empty=True,
+                    takeable=True)
 
-        for next_row_down in range(pos.row - 1, BOARD_MIN - 1, -1):
-            obstruction = self.maybe_add_square(
-                squarelist=moves,
-                square=Square.at(next_row_down, pos.col),
-                board=board,
-                empty=True,
-                takeable=True)
-
-            if obstruction:
-                break
-
-        for next_col_right in range(pos.col + 1, BOARD_MAX + 1):
-            obstruction = self.maybe_add_square(
-                squarelist=moves,
-                square=Square.at(pos.row, next_col_right),
-                board=board,
-                empty=True,
-                takeable=True)
-
-            if obstruction:
-                break
-
-        for next_col_left in range(pos.col - 1, BOARD_MIN - 1, -1):
-            obstruction = self.maybe_add_square(
-                squarelist=moves,
-                square=Square.at(pos.row, next_col_left),
-                board=board,
-                empty=True,
-                takeable=True)
-
-            if obstruction:
-                break
+                if obstruction:
+                    break
 
         return moves
 
