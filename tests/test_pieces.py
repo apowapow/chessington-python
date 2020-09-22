@@ -617,19 +617,103 @@ class TestPawns:
 
     @staticmethod
     def test_king_move_unobstructed():
-        return True  # todo
+        # Arrange
+        board = Board.empty()
+        king = King(Player.BLACK)
+        king_square = Square.at(3, 4)
+        board.set_piece(king_square, king)
+
+        # Act
+        moves = king.get_available_moves(board)
+
+        # Assert
+        assert Square.at(4, 4) in moves
+        assert Square.at(4, 5) in moves
+        assert Square.at(3, 5) in moves
+        assert Square.at(2, 5) in moves
+        assert Square.at(2, 4) in moves
+        assert Square.at(2, 3) in moves
+        assert Square.at(3, 3) in moves
+        assert Square.at(4, 3) in moves
 
     @staticmethod
     def test_king_move_unobstructed_out_of_bounds():
-        return True  # todo
+        # Arrange
+        board = Board.empty()
+        king = King(Player.BLACK)
+        king_square = Square.at(7, 7)
+        board.set_piece(king_square, king)
+
+        # Act
+        moves = king.get_available_moves(board)
+
+        # Assert
+        assert Square.at(8, 7) not in moves
+        assert Square.at(8, 8) not in moves
+        assert Square.at(7, 8) not in moves
+        assert Square.at(6, 8) not in moves
+        assert Square.at(6, 7) in moves
+        assert Square.at(6, 6) in moves
+        assert Square.at(7, 6) in moves
+        assert Square.at(8, 6) not in moves
 
     @staticmethod
     def test_king_move_obstructed_same_colour_piece():
-        return True  # todo
+        # Arrange
+        board = Board.empty()
+        king = King(Player.BLACK)
+        king_square = Square.at(3, 4)
+        board.set_piece(king_square, king)
+
+        friendly_diagonal = Pawn(Player.BLACK)
+        friendly_diagonal_square = Square.at(4, 5)
+        board.set_piece(friendly_diagonal_square, friendly_diagonal)
+
+        friendly_lateral = Pawn(Player.BLACK)
+        friendly_lateral_square = Square.at(4, 4)
+        board.set_piece(friendly_lateral_square, friendly_lateral)
+
+        # Act
+        moves = king.get_available_moves(board)
+
+        # Assert
+        assert Square.at(4, 4) not in moves
+        assert Square.at(4, 5) not in moves
+        assert Square.at(3, 5) in moves
+        assert Square.at(2, 5) in moves
+        assert Square.at(2, 4) in moves
+        assert Square.at(2, 3) in moves
+        assert Square.at(3, 3) in moves
+        assert Square.at(4, 3) in moves
 
     @staticmethod
     def test_king_move_obstructed_opposite_colour_piece():
-        return True  # todo
+        # Arrange
+        board = Board.empty()
+        king = King(Player.BLACK)
+        king_square = Square.at(3, 4)
+        board.set_piece(king_square, king)
+
+        enemy_diagonal = Pawn(Player.WHITE)
+        enemy_diagonal_square = Square.at(4, 5)
+        board.set_piece(enemy_diagonal_square, enemy_diagonal)
+
+        enemy_lateral = Pawn(Player.WHITE)
+        enemy_lateral_square = Square.at(4, 4)
+        board.set_piece(enemy_lateral_square, enemy_lateral)
+
+        # Act
+        moves = king.get_available_moves(board)
+
+        # Assert
+        assert Square.at(4, 4) in moves
+        assert Square.at(4, 5) in moves
+        assert Square.at(3, 5) in moves
+        assert Square.at(2, 5) in moves
+        assert Square.at(2, 4) in moves
+        assert Square.at(2, 3) in moves
+        assert Square.at(3, 3) in moves
+        assert Square.at(4, 3) in moves
 
     @staticmethod
     def test_knight_move_unobstructed():

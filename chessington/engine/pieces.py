@@ -38,7 +38,7 @@ class Piece(ABC):
         else:
             return True  # walls of board are also obstructions
 
-    def get_diagonal(self, squarelist, square, board):
+    def get_diagonal(self, squarelist, square, board, is_king=False):
         direction = [(True, True), (False, True), (False, False), (True, False)]
 
         for d in direction:
@@ -55,12 +55,12 @@ class Piece(ABC):
                     empty=True,
                     takeable=True)
 
-                if obstruction:
+                if obstruction or is_king:
                     break
 
                 next_col = next_col + 1 if d[1] else next_col - 1
 
-    def get_lateral(self, squarelist, square, board):
+    def get_lateral(self, squarelist, square, board, is_king=False):
         config = [
             (square.row + 1, BOARD_MAX + 1, 1, True),
             (square.row - 1, BOARD_MIN - 1, -1, True),
@@ -77,7 +77,7 @@ class Piece(ABC):
                     empty=True,
                     takeable=True)
 
-                if obstruction:
+                if obstruction or is_king:
                     break
 
     @abstractmethod
@@ -193,4 +193,9 @@ class King(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        moves = []
+        pos = board.find_piece(self)
+        self.get_diagonal(moves, pos, board, is_king=True)
+        self.get_lateral(moves, pos, board, is_king=True)
+
+        return moves
