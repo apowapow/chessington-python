@@ -3,7 +3,45 @@ from chessington.engine.data import Player, Square
 from chessington.engine.pieces import Pawn, Bishop, Rook, Queen, King, Knight
 
 
-class TestKingIsChecked:
+class TestKingIsInCheck:
+
+    @staticmethod
+    def test_white_king_not_in_check():
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        king_square = Square.at(2, 3)
+        board.set_piece(king_square, king)
+
+        enemy_pawn = Pawn(Player.BLACK)
+        enemy_pawn_square = Square.at(3, 3)
+        board.set_piece(enemy_pawn_square, enemy_pawn)
+
+        enemy_rook = Rook(Player.BLACK)
+        enemy_rook_square = Square.at(3, 4)
+        board.set_piece(enemy_rook_square, enemy_rook)
+
+        enemy_bishop = Bishop(Player.BLACK)
+        enemy_bishop_square = Square.at(1, 3)
+        board.set_piece(enemy_bishop_square, enemy_bishop)
+
+        enemy_knight = Knight(Player.BLACK)
+        enemy_knight_square = Square.at(7, 7)
+        board.set_piece(enemy_knight_square, enemy_knight)
+
+        enemy_queen = Queen(Player.BLACK)
+        enemy_queen_square = Square.at(3, 0)
+        board.set_piece(enemy_queen_square, enemy_queen)
+
+        enemy_king = King(Player.BLACK)
+        enemy_king_square = Square.at(6, 6)
+        board.set_piece(enemy_king_square, enemy_king)
+
+        # Act
+        check = king.is_in_check(board)
+
+        # Assert
+        assert check is False
 
     @staticmethod
     def test_white_king_checked_by_black_pawn():
@@ -118,7 +156,6 @@ class TestKingIsChecked:
 
         # Assert
         assert check is True
-
 
 
 class TestKingCannotMoveIntoCheck:
@@ -300,9 +337,6 @@ class TestKingCannotMoveIntoCheck:
         assert Square.at(1, 4) not in moves_black
         assert Square.at(1, 5) in moves_black
         assert len(moves_black) == 5
-# class TestPieceCannotMoveIfCreateCheck:
-#
-#     # @staticmethod
-#     #
-#
-# class TestCheckMate:
+
+    # class TestPieceCannotMoveAndPutOwnKingIntoCheck:
+    # class TestCheckMate:
