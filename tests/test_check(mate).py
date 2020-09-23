@@ -165,26 +165,26 @@ class TestKingCannotMoveIntoCheck:
         # Arrange
         board = Board.empty()
         king = King(Player.WHITE)
-        king_square = Square.at(2, 3)
+        king_square = Square.at(1, 3)
         board.set_piece(king_square, king)
 
         enemy = Pawn(Player.BLACK)
-        enemy_square = Square.at(1, 2)
+        enemy_square = Square.at(3, 2)
         board.set_piece(enemy_square, enemy)
 
         # Act
         moves = king.get_available_moves(board)
 
         # Assert
+        assert Square.at(0, 2) in moves
         assert Square.at(1, 2) in moves
         assert Square.at(2, 2) in moves
-        assert Square.at(3, 2) in moves
-        assert Square.at(3, 3) in moves
-        assert Square.at(3, 4) in moves
+        assert Square.at(2, 3) not in moves
         assert Square.at(2, 4) in moves
         assert Square.at(1, 4) in moves
-        assert Square.at(1, 3) in moves
-        assert len(moves) == 8
+        assert Square.at(0, 4) in moves
+        assert Square.at(0, 3) in moves
+        assert len(moves) == 7
 
 #
 #
@@ -228,10 +228,9 @@ class TestKingCannotMoveIntoCheck:
 
         # Act
         moves = king.get_available_moves(board)
-        # check if current square is in check?
-        # checked_by = king.get_checked_by(board)
 
         # Assert
+        assert len(moves) == 7
         assert Square.at(1, 2) in moves
         assert Square.at(2, 2) in moves
         assert Square.at(3, 2) in moves
@@ -240,7 +239,7 @@ class TestKingCannotMoveIntoCheck:
         assert Square.at(2, 4) in moves
         assert Square.at(1, 4) in moves
         assert Square.at(1, 3) in moves
-        assert len(moves) == 7
+
 
     @staticmethod
     def test_king_cannot_move_to_check_by_knight():
