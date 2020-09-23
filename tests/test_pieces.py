@@ -332,6 +332,8 @@ class TestPawns:
         assert Square.at(2, 3) not in moves
         assert Square.at(2, 5) not in moves
 
+class TestBishops:
+
     @staticmethod
     def test_bishop_move_unobstructed():
         # Arrange
@@ -412,6 +414,7 @@ class TestPawns:
         assert Square.at(1, 2) in moves
         assert Square.at(0, 1) not in moves
 
+class TestRook:
     @staticmethod
     def test_rook_move_unobstructed():
 
@@ -494,6 +497,7 @@ class TestPawns:
         assert Square.at(6, 4) in moves
         assert Square.at(7, 4) not in moves
 
+class TestQueen:
     @staticmethod
     def test_queen_move_unobstructed():
         # Arrange
@@ -615,6 +619,8 @@ class TestPawns:
         assert Square.at(6, 4) in moves
         assert Square.at(7, 4) not in moves
 
+class TestKing:
+
     @staticmethod
     def test_king_move_unobstructed():
         # Arrange
@@ -716,6 +722,51 @@ class TestPawns:
         assert Square.at(4, 3) in moves
 
     @staticmethod
+    def test_cannot_take_opponent_king():
+        # Arrange
+        board = Board.empty()
+        bishop = Bishop(Player.BLACK)
+        bishop_square = Square.at(3, 4)
+        board.set_piece(bishop_square, bishop)
+
+        king = King(Player.WHITE)
+        king_square = Square.at(5, 2)
+        board.set_piece(king_square, king)
+
+        # Act
+        moves = bishop.get_available_moves(board)
+
+        # Assert
+        assert Square.at(4, 3) in moves
+        assert Square.at(5, 2) not in moves
+        assert Square.at(6, 1) not in moves
+        assert Square.at(7, 0) not in moves
+
+    @staticmethod
+    def test_cannot_take_own_king():
+        # Arrange
+        board = Board.empty()
+        bishop = Bishop(Player.BLACK)
+        bishop_square = Square.at(3, 4)
+        board.set_piece(bishop_square, bishop)
+
+        king = King(Player.BLACK)
+        king_square = Square.at(5, 2)
+        board.set_piece(king_square, king)
+
+        # Act
+        moves = bishop.get_available_moves(board)
+
+        # Assert
+        assert Square.at(4, 3) in moves
+        assert Square.at(5, 2) not in moves
+        assert Square.at(6, 1) not in moves
+        assert Square.at(7, 0) not in moves
+
+
+class TestKnight:
+
+    @staticmethod
     def test_knight_move_unobstructed():
         # Arrange
         board = Board.empty()
@@ -809,44 +860,3 @@ class TestPawns:
         assert Square.at(2, 2) in moves
         assert len(moves) == 8
 
-    @staticmethod
-    def test_cannot_take_opponent_king():
-        # Arrange
-        board = Board.empty()
-        bishop = Bishop(Player.BLACK)
-        bishop_square = Square.at(3, 4)
-        board.set_piece(bishop_square, bishop)
-
-        king = King(Player.WHITE)
-        king_square = Square.at(5, 2)
-        board.set_piece(king_square, king)
-
-        # Act
-        moves = bishop.get_available_moves(board)
-
-        # Assert
-        assert Square.at(4, 3) in moves
-        assert Square.at(5, 2) not in moves
-        assert Square.at(6, 1) not in moves
-        assert Square.at(7, 0) not in moves
-
-    @staticmethod
-    def test_cannot_take_own_king():
-        # Arrange
-        board = Board.empty()
-        bishop = Bishop(Player.BLACK)
-        bishop_square = Square.at(3, 4)
-        board.set_piece(bishop_square, bishop)
-
-        king = King(Player.BLACK)
-        king_square = Square.at(5, 2)
-        board.set_piece(king_square, king)
-
-        # Act
-        moves = bishop.get_available_moves(board)
-
-        # Assert
-        assert Square.at(4, 3) in moves
-        assert Square.at(5, 2) not in moves
-        assert Square.at(6, 1) not in moves
-        assert Square.at(7, 0) not in moves
