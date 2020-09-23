@@ -14,24 +14,34 @@ class TestKingIsChecked:
         board.set_piece(king_square, king)
 
         enemy = Pawn(Player.BLACK)
-        enemy_square = Square.at(1, 2)
+        enemy_square = Square.at(3, 2)
         board.set_piece(enemy_square, enemy)
 
         # Act
-        moves = king.get_available_moves(board)
-        # check if current square is in check?
-        # checked_by = king.get_checked_by(board)
+        # check if current square is in check by a pawn
+        check = king.is_in_check(board)
 
         # Assert
-        assert Square.at(1, 2) in moves
-        assert Square.at(2, 2) in moves
-        assert Square.at(3, 2) in moves
-        assert Square.at(3, 3) in moves
-        assert Square.at(3, 4) in moves
-        assert Square.at(2, 4) in moves
-        assert Square.at(1, 4) in moves
-        assert Square.at(1, 3) in moves
-        assert len(moves) == 8
+        assert check is True
+
+    @staticmethod
+    def test_white_king_checked_by_black_knight():
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        king_square = Square.at(2, 3)
+        board.set_piece(king_square, king)
+
+        enemy = Knight(Player.BLACK)
+        enemy_square = Square.at(1, 1)
+        board.set_piece(enemy_square, enemy)
+
+        # Act
+        # check if current square is in check?
+        check = king.is_in_check(board)
+
+        # Assert
+        assert check is True
 
     @staticmethod
     def test_white_king_checked_by_black_rook():
@@ -46,9 +56,115 @@ class TestKingIsChecked:
         board.set_piece(enemy_square, enemy)
 
         # Act
-        moves = king.get_available_moves(board)
+
         # check if current square is in check?
-        # checked_by = king.get_checked_by(board)
+        check = king.is_in_check(board)
+
+        # Assert
+        assert check is True
+
+    @staticmethod
+    def test_white_king_checked_by_black_bishop():
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        king_square = Square.at(2, 3)
+        board.set_piece(king_square, king)
+
+        enemy = Bishop(Player.BLACK)
+        enemy_square = Square.at(1, 2)
+        board.set_piece(enemy_square, enemy)
+
+        # Act
+        # check if current square is in check?
+        check = king.is_in_check(board)
+
+        # Assert
+        assert check is True
+
+
+    @staticmethod
+    def test_white_king_checked_by_black_queen_lateral():
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        king_square = Square.at(2, 3)
+        board.set_piece(king_square, king)
+
+        enemy = Queen(Player.BLACK)
+        enemy_square = Square.at(2, 1)
+        board.set_piece(enemy_square, enemy)
+
+        # Act
+        check = king.is_in_check(board)
+
+        # Assert
+        assert check is True
+
+    @staticmethod
+    def test_white_king_checked_by_black_queen_diagonal():
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        king_square = Square.at(2, 3)
+        board.set_piece(king_square, king)
+
+        enemy = Queen(Player.BLACK)
+        enemy_square = Square.at(1, 2)
+        board.set_piece(enemy_square, enemy)
+
+        # Act
+        check = king.is_in_check(board)
+
+        # Assert
+        assert check is True
+
+
+
+class TestKingCannotMoveIntoCheck:
+
+    @staticmethod
+    def test_king_cannot_move_to_check_by_pawn():
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        king_square = Square.at(2, 3)
+        board.set_piece(king_square, king)
+
+        enemy = Pawn(Player.BLACK)
+        enemy_square = Square.at(1, 2)
+        board.set_piece(enemy_square, enemy)
+
+        # Act
+        moves = king.get_available_moves(board)
+
+        # Assert
+        assert Square.at(1, 2) in moves
+        assert Square.at(2, 2) in moves
+        assert Square.at(3, 2) in moves
+        assert Square.at(3, 3) in moves
+        assert Square.at(3, 4) in moves
+        assert Square.at(2, 4) in moves
+        assert Square.at(1, 4) in moves
+        assert Square.at(1, 3) in moves
+        assert len(moves) == 8
+
+#
+#
+    @staticmethod
+    def test_king_cannot_move_to_check_by_rook():
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        king_square = Square.at(2, 3)
+        board.set_piece(king_square, king)
+
+        enemy = Rook(Player.BLACK)
+        enemy_square = Square.at(2, 2)
+        board.set_piece(enemy_square, enemy)
+
+        # Act
+        moves = king.get_available_moves(board)
 
         # Assert
         assert Square.at(1, 2) not in moves
@@ -62,7 +178,7 @@ class TestKingIsChecked:
         assert len(moves) == 5
 
     @staticmethod
-    def test_white_king_checked_by_black_bishop():
+    def test_king_cannot_move_to_check_by_bishop():
         # Arrange
         board = Board.empty()
         king = King(Player.WHITE)
@@ -90,7 +206,7 @@ class TestKingIsChecked:
         assert len(moves) == 7
 
     @staticmethod
-    def test_white_king_checked_by_black_knight():
+    def test_king_cannot_move_to_check_by_knight():
         # Arrange
         board = Board.empty()
         king = King(Player.WHITE)
@@ -117,8 +233,9 @@ class TestKingIsChecked:
         assert Square.at(1, 3) in moves
         assert len(moves) == 7
 
+
     @staticmethod
-    def test_white_king_checked_by_black_queen():
+    def test_king_cannot_move_to_check_by_queen():
         # Arrange
         board = Board.empty()
         king = King(Player.WHITE)
@@ -145,29 +262,6 @@ class TestKingIsChecked:
         assert Square.at(1, 3) not in moves
         assert len(moves) == 3
 
-
-class TestKingCannotMoveIntoCheck:
-#
-#     @staticmethod
-#     def test_king_cannot_move_to_check_by_pawn():
-#
-#
-#     @staticmethod
-#     def test_king_cannot_move_to_check_by_rook():
-#         pass
-#
-#     @staticmethod
-#     def test_king_cannot_move_to_check_by_bishop():
-#         pass
-#
-#     @staticmethod
-#     def test_king_cannot_move_to_check_by_knight():
-#         pass
-#
-#     @staticmethod
-#     def test_king_cannot_move_to_check_by_queen():
-#         pass
-#
     @staticmethod
     def test_king_cannot_move_to_check_by_king():
         # Arrange

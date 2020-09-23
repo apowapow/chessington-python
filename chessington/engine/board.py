@@ -17,6 +17,7 @@ class Board:
     def __init__(self, player, board_state):
         self.current_player = Player.WHITE
         self.board = board_state
+        self.pieces = {Player.WHITE: {}, Player.BLACK: {}}
 
     @staticmethod
     def empty():
