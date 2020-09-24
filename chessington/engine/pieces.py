@@ -99,19 +99,24 @@ class Piece(ABC):
             return True  # walls of board are also obstructions
 
     def _is_illegal_move(self, board, square) -> bool:
+        # If there is no King on the board then cannot be illegal move. For testing arrangements.
+        king_piece = board.get_king(self.player)
+        if king_piece is None:
+            return False
         # check if self moves to square will the king be in check
         original_pos = board.find_piece(self)
         moving_piece = self
         piece_at_square = board.get_piece(square)
 
+        if piece_at_square == king_piece:
+            # trying to take own king
+            # not valid but doesn't cause check so
+            return False
         # move piece
         board.set_piece(square, moving_piece)
         board.set_piece(original_pos, None)
 
         # check if king is on check
-        king_piece = board.get_king(self.player)
-        if king_piece is None:
-            return False
         is_check = king_piece.is_in_check(board)
 
         # return piece
@@ -218,7 +223,7 @@ class Piece(ABC):
         our_kings_neighbours = [
             Square.at(r, c)
             for r in [our_pos.row-1, our_pos.row, our_pos.row+1] if BOARD_MIN <= r <= BOARD_MAX
-            for c in [our_pos.col-1, our_pos.col, our_pos.col+1] if BOARD_MIN <= r <= BOARD_MAX
+            for c in [our_pos.col-1, our_pos.col, our_pos.col+1] if BOARD_MIN <= c <= BOARD_MAX
         ]
         our_kings_neighbours.remove(our_pos)
 
