@@ -6,15 +6,20 @@ from abc import ABC, abstractmethod
 
 from chessington.engine.data import Player, Square
 
+import copy
+
+BOARD_MAX = 7
+BOARD_MIN = 0
+
+
 class Piece(ABC):
+
     """
     An abstract base class from which all pieces inherit.
     """
 
     def __init__(self, player):
-        self.player = player
-<<<<<<< Updated upstream
-=======
+        self.player = playe
         self.moved = False
 
     def maybe_add_square(self, squarelist, square, board, empty, takeable) -> bool:
@@ -26,6 +31,14 @@ class Piece(ABC):
                         squarelist.append(square)
                     return False  # empty square is not obstruction
 
+    def maybe_add_square(self, squarelist, square, board, empty, takeable):
+        if BOARD_MIN <= square.row <= BOARD_MAX and BOARD_MIN <= square.col <= BOARD_MAX:
+            piece = board.get_piece(square)
+            if not self._is_illegal_move(board, square):
+                if piece is None:
+                    if empty:
+                        squarelist.append(square)
+                    return False  # empty square is not obstruction
                 else:
                     if piece.player != self.player:
                         if takeable:
@@ -39,32 +52,22 @@ class Piece(ABC):
 
     def _is_illegal_move(self, board, square) -> bool:
         # check if self moves to square will the king be in check
-        # current_piece = board.get_piece(self)
         original_pos = board.find_piece(self)
         piece_at_square = board.get_piece(square)
 
-        #board_temp = copy.deepcopy(board)
         king_piece = board.get_king(self.player)
-        #self.move_to(board, square)
+        #move piece
         board.set_piece(original_pos, square)
         board.set_piece(original_pos, None)
+        # check if king is on check
         if king_piece is None:
             return False
         is_check = king_piece.is_in_check(board)
-        # self.move_to(board, original_pos)
+        # return piece
         board.set_piece(square, original_pos)
         board.set_piece(square, piece_at_square)
-        try:
-            board.find_piece(self)
-        except:
-            pass
-        board.set_piece(square, piece_at_square)
-        try:
-            board.find_piece(self)
-        except:
-            pass
         return is_check
-
+        
     def is_in_check(self, board, square=None) -> bool:
         pos = board.find_piece(self) if square is None else square
 
@@ -186,7 +189,6 @@ class Piece(ABC):
 
                 next_col = next_col + 1 if d[1] else next_col - 1
         return False
->>>>>>> Stashed changes
 
     @abstractmethod
     def get_available_moves(self, board):
@@ -201,6 +203,7 @@ class Piece(ABC):
         """
         current_square = board.find_piece(self)
         board.move_piece(current_square, new_square)
+        self.moved = True
 
 
 class Pawn(Piece):
@@ -209,7 +212,42 @@ class Pawn(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        moves = []
+        white = self.player == Player.WHITE
+        pos = board.find_piece(self)
+
+        # in front
+        self.maybe_add_square(
+            squarelist=moves,
+            square=Square.at(pos.row + 1 if white else pos.row - 1, pos.col),
+            board=board,
+            empty=True,
+            takeable=False)
+
+        if len(moves) == 1 and (not self.moved):
+            self.maybe_add_square(
+                squarelist=moves,
+                square=Square.at(pos.row + 2 if white else pos.row - 2, pos.col),
+                board=board,
+                empty=True,
+                takeable=False)
+
+        # diagonal
+        self.maybe_add_square(
+            squarelist=moves,
+            square=Square.at(pos.row + 1 if white else pos.row - 1, pos.col - 1),
+            board=board,
+            empty=False,
+            takeable=True)
+
+        self.maybe_add_square(
+            squarelist=moves,
+            square=Square.at(pos.row + 1 if white else pos.row - 1, pos.col + 1),
+            board=board,
+            empty=False,
+            takeable=True)
+
+        return moves
 
 
 class Knight(Piece):
@@ -218,7 +256,29 @@ class Knight(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        moves = []
+        pos = board.find_piece(self)
+
+        config = [
+            (1, 2),
+            (1, -2),
+            (-1, 2),
+            (-1, -2),
+            (2, 1),
+            (2, -1),
+            (-2, 1),
+            (-2, -1),
+        ]
+
+        for row_offset, col_offset in config:
+            self.maybe_add_square(
+                squarelist=moves,
+                square=Square.at(pos.row + row_offset, pos.col + col_offset),
+                board=board,
+                empty=True,
+                takeable=True)
+
+        return moves
 
 
 class Bishop(Piece):
@@ -227,7 +287,10 @@ class Bishop(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        moves = []
+        self.get_diagonal(moves, board.find_piece(self), board)
+
+        return moves
 
 
 class Rook(Piece):
@@ -236,7 +299,10 @@ class Rook(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        moves = []
+        self.get_lateral(moves, board.find_piece(self), board)
+
+        return moves
 
 
 class Queen(Piece):
@@ -245,7 +311,12 @@ class Queen(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        moves = []
+        pos = board.find_piece(self)
+        self.get_diagonal(moves, pos, board)
+        self.get_lateral(moves, pos, board)
+
+        return moves
 
 
 class King(Piece):
@@ -254,4 +325,9 @@ class King(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        moves = []
+        pos = board.find_piece(self)
+        self.get_diagonal(moves, pos, board, is_king=True)
+        self.get_lateral(moves, pos, board, is_king=True)
+
+        return moves

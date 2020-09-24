@@ -6,6 +6,7 @@ this is just a "dumb" board that will let you move pieces around as you like.
 from chessington.engine.data import Player, Square
 from chessington.engine.pieces import Pawn, Knight, Bishop, Rook, Queen, King
 
+
 BOARD_SIZE = 8
 
 class Board:
@@ -16,6 +17,7 @@ class Board:
     def __init__(self, player, board_state):
         self.current_player = Player.WHITE
         self.board = board_state
+        self.pieces = {Player.WHITE: {}, Player.BLACK: {}}
 
     @staticmethod
     def empty():
@@ -77,10 +79,6 @@ class Board:
             self.set_piece(to_square, moving_piece)
             self.set_piece(from_square, None)
             self.current_player = self.current_player.opponent()
-<<<<<<< Updated upstream
-=======
-        else:
-            pass
 
     def get_king(self, player):
         for row in range(BOARD_SIZE):
@@ -89,4 +87,4 @@ class Board:
                 if isinstance(piece, King) and piece.player is player:
                     return piece
         return None
->>>>>>> Stashed changes
+
