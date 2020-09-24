@@ -284,16 +284,9 @@ class TestKingCannotMoveIntoCheck:
 
         # Act
         moves = king.get_available_moves(board)
-<<<<<<< HEAD
 
         # Assert
         assert len(moves) == 3
-=======
-        # check if current square is in check?
-        # checked_by = king.get_checked_by(board)
-
-        # Assert
->>>>>>> master
         assert Square.at(1, 2) in moves
         assert Square.at(2, 2) not in moves
         assert Square.at(3, 2) not in moves
@@ -302,10 +295,6 @@ class TestKingCannotMoveIntoCheck:
         assert Square.at(2, 4) in moves
         assert Square.at(1, 4) not in moves
         assert Square.at(1, 3) not in moves
-<<<<<<< HEAD
-=======
-        assert len(moves) == 3
->>>>>>> master
 
     @staticmethod
     def test_king_cannot_move_to_check_by_king():
