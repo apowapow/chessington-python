@@ -19,64 +19,23 @@ class Piece(ABC):
     """
 
     def __init__(self, player):
-        self.player = playe
+        self.player = player
         self.moved = False
 
-    def maybe_add_square(self, squarelist, square, board, empty, takeable) -> bool:
-        if BOARD_MIN <= square.row <= BOARD_MAX and BOARD_MIN <= square.col <= BOARD_MAX:
-            if not self._is_illegal_move(board, square):
-                piece = board.get_piece(square)
-                if piece is None:
-                    if empty:
-                        squarelist.append(square)
-                    return False  # empty square is not obstruction
+    def move_to(self, board, new_square):
+        """
+        Move this piece to the given square on the board.
+        """
+        current_square = board.find_piece(self)
+        board.move_piece(current_square, new_square)
+        self.moved = True
 
-    def maybe_add_square(self, squarelist, square, board, empty, takeable):
-        if BOARD_MIN <= square.row <= BOARD_MAX and BOARD_MIN <= square.col <= BOARD_MAX:
-            piece = board.get_piece(square)
-            if not self._is_illegal_move(board, square):
-                if piece is None:
-                    if empty:
-                        squarelist.append(square)
-                    return False  # empty square is not obstruction
-                else:
-                    if piece.player != self.player:
-                        if takeable:
-                            if not isinstance(piece, King):
-                                squarelist.append(square)
-                    return True  # any colour is obstruction
-            else:
-                return False  # an illegal move should not stop get lat or dia from looking in that direction
-        else:
-            return True  # walls of board are also obstructions
-
-    def _is_illegal_move(self, board, square) -> bool:
-        # check if self moves to square will the king be in check
-        original_pos = board.find_piece(self)
-        piece_at_square = board.get_piece(square)
-
-        king_piece = board.get_king(self.player)
-        #move piece
-        board.set_piece(original_pos, square)
-        board.set_piece(original_pos, None)
-        # check if king is on check
-        if king_piece is None:
-            return False
-        is_check = king_piece.is_in_check(board)
-        # return piece
-        board.set_piece(square, original_pos)
-        board.set_piece(square, piece_at_square)
-        return is_check
-        
-    def is_in_check(self, board, square=None) -> bool:
-        pos = board.find_piece(self) if square is None else square
-
-        if not self._checked_by_pawn(board, pos):
-            if not self._checked_by_knight(board, pos):
-                if not self._checked_by_lateral(board, pos):
-                    if not self._checked_by_diagonal(board, pos):
-                        return False
-        return True
+    @abstractmethod
+    def get_available_moves(self, board):
+        """
+        Get all squares that the piece is allowed to move to.
+        """
+        pass
 
     def get_diagonal(self, squarelist, square, board, is_king=False):
         direction = [(True, True), (False, True), (False, False), (True, False)]
@@ -120,10 +79,71 @@ class Piece(ABC):
                 if obstruction or is_king:
                     break
 
+    def maybe_add_square(self, squarelist, square, board, empty, takeable) -> bool:
+        if BOARD_MIN <= square.row <= BOARD_MAX and BOARD_MIN <= square.col <= BOARD_MAX:
+            if not self._is_illegal_move(board, square):
+                piece = board.get_piece(square)
+                if piece is None:
+                    if empty:
+                        squarelist.append(square)
+                    return False  # empty square is not obstruction
+                else:
+                    if piece.player != self.player:
+                        if takeable:
+                            if not isinstance(piece, King):
+                                squarelist.append(square)
+                    return True  # any colour is obstruction
+            else:
+                return False  # an illegal move should not stop get lat or dia from looking in that direction
+        else:
+            return True  # walls of board are also obstructions
+
+    def _is_illegal_move(self, board, square) -> bool:
+        # check if self moves to square will the king be in check
+        original_pos = board.find_piece(self)
+        moving_piece = self
+        piece_at_square = board.get_piece(square)
+
+        # move piece
+        board.set_piece(square, moving_piece)
+        board.set_piece(original_pos, None)
+
+        # check if king is on check
+        king_piece = board.get_king(self.player)
+        if king_piece is None:
+            return False
+        is_check = king_piece.is_in_check(board)
+
+        # return piece
+        board.set_piece(original_pos, moving_piece)
+        board.set_piece(square, piece_at_square)
+
+        return is_check
+        
+    def is_in_check(self, board) -> bool:
+        pos = board.find_piece(self)
+
+        if not self._checked_by_pawn(board, pos):
+            if not self._checked_by_knight(board, pos):
+                if not self._checked_by_lateral(board, pos):
+                    if not self._checked_by_diagonal(board, pos):
+                        if not self._checked_by_king(board, pos):
+                            return False
+        # todo handle stalemate
+        return True
+
     def _checked_by_pawn(self, board, pos) -> bool:
         white = self.player == Player.WHITE
-        pawn_left = board.get_piece(Square.at(pos.row + 1 if white else pos.row - 1, pos.col - 1))
-        pawn_right = board.get_piece(Square.at(pos.row + 1 if white else pos.row - 1, pos.col + 1))
+        try:
+            pawn_left = board.get_piece(Square.at(pos.row + 1 if white else pos.row - 1, pos.col - 1))
+        except IndexError:
+            # looking for a pawn beyond the board.
+            pawn_left = None
+        try:
+            pawn_right = board.get_piece(Square.at(pos.row + 1 if white else pos.row - 1, pos.col + 1))
+        except IndexError:
+            # looking for a pawn beyond the board.
+            pawn_right = None
 
         return (isinstance(pawn_left, Pawn) and pawn_left.player is not self.player) or \
                (isinstance(pawn_right, Pawn) and pawn_right.player is not self.player)
@@ -141,7 +161,11 @@ class Piece(ABC):
         ]
 
         for row_offset, col_offset in config:
-            curr_knight = board.get_piece(Square.at(pos.row + row_offset, pos.col + col_offset))
+            try:
+                curr_knight = board.get_piece(Square.at(pos.row + row_offset, pos.col + col_offset))
+            except IndexError:
+                # looking for a knight beyond the board.
+                curr_knight = None
 
             if isinstance(curr_knight, Knight) and curr_knight.player is not self.player:
                 return True
@@ -190,21 +214,51 @@ class Piece(ABC):
                 next_col = next_col + 1 if d[1] else next_col - 1
         return False
 
-    @abstractmethod
-    def get_available_moves(self, board):
-        """
-        Get all squares that the piece is allowed to move to.
-        """
-        pass
+    def _checked_by_king(self, board, our_pos) -> bool:
+        our_kings_neighbours = [
+            Square.at(r, c)
+            for r in [our_pos.row-1, our_pos.row, our_pos.row+1] if BOARD_MIN <= r <= BOARD_MAX
+            for c in [our_pos.col-1, our_pos.col, our_pos.col+1] if BOARD_MIN <= r <= BOARD_MAX
+        ]
+        our_kings_neighbours.remove(our_pos)
 
-    def move_to(self, board, new_square):
-        """
-        Move this piece to the given square on the board.
-        """
-        current_square = board.find_piece(self)
-        board.move_piece(current_square, new_square)
-        self.moved = True
+        for square in our_kings_neighbours:
+            piece = board.get_piece(square)
+            if isinstance(piece, King):
+                return True
+        return False
 
+
+    #     print(our_pos)
+    #     # our_king = self
+    #     # our_pos = our_pos
+    #     our_kings_moves = [
+    #         Square.at(r, c)
+    #         for r in [our_pos.row-1, our_pos.row, our_pos.row+1] if BOARD_MIN <= r <= BOARD_MAX
+    #         for c in [our_pos.col-1, our_pos.col, our_pos.col+1] if BOARD_MIN <= r <= BOARD_MAX
+    #     ]
+    #     print("our_kings_moves unedit: ", our_kings_moves)
+    #     our_kings_moves.remove(our_pos)
+    #     print("our_kings_moves: ", our_kings_moves)
+    #
+    #     #find opponent king
+    #     their_king = board.get_king(self.player.opponent())
+    #     if their_king is None:
+    #         return False
+    #     their_pos = board.find_piece(their_king)
+    #     their_kings_moves = [
+    #         Square.at(r, c)
+    #         for r in [their_pos.row-1, their_pos.row, their_pos.row+1] if BOARD_MIN <= r <= BOARD_MAX
+    #         for c in [their_pos.col-1, their_pos.col, their_pos.col+1] if BOARD_MIN <= r <= BOARD_MAX
+    #     ]
+    #     their_kings_moves.remove(their_pos)
+    #
+    #     # find common moves
+    #     c = [move for move in our_kings_moves if move in their_kings_moves]
+    #     if not c:
+    #         # no common moves found not in check by king
+    #         return False
+    #     return True
 
 class Pawn(Piece):
     """
