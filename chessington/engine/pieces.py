@@ -229,37 +229,6 @@ class Piece(ABC):
         return False
 
 
-    #     print(our_pos)
-    #     # our_king = self
-    #     # our_pos = our_pos
-    #     our_kings_moves = [
-    #         Square.at(r, c)
-    #         for r in [our_pos.row-1, our_pos.row, our_pos.row+1] if BOARD_MIN <= r <= BOARD_MAX
-    #         for c in [our_pos.col-1, our_pos.col, our_pos.col+1] if BOARD_MIN <= r <= BOARD_MAX
-    #     ]
-    #     print("our_kings_moves unedit: ", our_kings_moves)
-    #     our_kings_moves.remove(our_pos)
-    #     print("our_kings_moves: ", our_kings_moves)
-    #
-    #     #find opponent king
-    #     their_king = board.get_king(self.player.opponent())
-    #     if their_king is None:
-    #         return False
-    #     their_pos = board.find_piece(their_king)
-    #     their_kings_moves = [
-    #         Square.at(r, c)
-    #         for r in [their_pos.row-1, their_pos.row, their_pos.row+1] if BOARD_MIN <= r <= BOARD_MAX
-    #         for c in [their_pos.col-1, their_pos.col, their_pos.col+1] if BOARD_MIN <= r <= BOARD_MAX
-    #     ]
-    #     their_kings_moves.remove(their_pos)
-    #
-    #     # find common moves
-    #     c = [move for move in our_kings_moves if move in their_kings_moves]
-    #     if not c:
-    #         # no common moves found not in check by king
-    #         return False
-    #     return True
-
 class Pawn(Piece):
     """
     A class representing a chess pawn.

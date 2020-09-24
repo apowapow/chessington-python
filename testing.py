@@ -1,0 +1,75 @@
+from tests.test_checkmate import TestKingIsInCheck as Test1
+from tests.test_checkmate import TestKingCannotMoveIntoCheck as Test2
+import tests.test_board as TestB
+from tests.test_pieces import TestPawns as TPP
+from tests.test_pieces import TestKnight as TPK
+from tests.test_pieces import TestRook as TPR
+from tests.test_pieces import TestBishops as TPB
+from tests.test_pieces import TestQueen as TPQ
+from tests.test_pieces import TestKing as TPKG
+
+Test1.test_white_king_not_in_check()
+Test1.test_white_king_checked_by_black_pawn()
+Test1.test_white_king_checked_by_black_knight()
+Test1.test_white_king_checked_by_black_bishop()
+Test1.test_white_king_checked_by_black_rook()
+Test1.test_white_king_checked_by_black_queen_lateral()
+Test1.test_white_king_checked_by_black_queen_diagonal()
+
+Test2.test_king_cannot_move_to_check_by_pawn()
+Test2.test_king_cannot_move_to_check_by_rook()
+Test2.test_king_cannot_move_to_check_by_bishop()
+Test2.test_king_cannot_move_to_check_by_knight()
+Test2.test_king_cannot_move_to_check_by_queen()
+Test2.test_king_cannot_move_to_check_by_king()
+
+TestB.test_new_board_has_black_pieces_at_top()
+TestB.test_new_board_has_white_pieces_at_bottom()
+TestB.test_pieces_can_be_moved_on_the_board()
+
+TPP.test_black_pawn_can_move_down_two_squares_if_not_moved()
+TPP.test_white_pawn_can_move_up_two_squares_if_not_moved()
+TPP.test_black_pawn_cannot_move_at_bottom_of_board()
+TPP.test_white_pawn_cannot_move_at_top_of_board()
+TPP.test_black_pawn_cannot_move_down_two_squares_if_already_moved()
+TPP.test_white_pawn_cannot_move_up_two_squares_if_already_moved()
+TPP.test_black_pawn_cannot_move_if_piece_in_front()
+TPP.test_white_pawn_cannot_move_if_piece_in_front()
+TPP.test_black_pawn_cannot_move_two_squares_if_piece_one_in_front()
+TPP.test_white_pawn_cannot_move_two_squares_if_piece_one_in_front()
+TPP.test_black_pawn_cannot_move_two_squares_if_piece_two_in_front()
+TPP.test_white_pawn_cannot_move_two_squares_if_piece_two_in_front()
+TPP.test_black_pawns_cannot_move_diagonally_except_to_capture()
+TPP.test_white_pawns_cannot_move_diagonally_except_to_capture()
+TPP.test_black_pawns_cannot_move_diagonally_except_to_capture()
+TPP.test_white_pawns_can_capture_diagonally()
+TPP.test_black_pawns_can_capture_diagonally()
+TPP.test_white_pawns_can_move_up_one_square()
+TPP.test_black_pawns_can_move_down_one_square()
+
+TPK.test_knight_move_unobstructed()
+TPK.test_knight_move_unobstructed_out_of_bounds()
+TPK.test_knight_move_obstructed_same_colour_piece()
+TPK.test_knight_move_obstructed_opposite_colour_piece()
+
+TPR.test_rook_move_unobstructed()
+TPR.test_rook_move_unobstructed_out_of_bounds()
+TPR.test_rook_move_obstructed_same_colour_piece()
+TPR.test_rook_move_obstructed_opposite_colour_piece()
+
+TPB.test_bishop_move_unobstructed()
+TPB.test_bishop_move_unobstructed_out_of_bounds()
+TPB.test_bishop_move_obstructed_same_colour_piece()
+TPB.test_bishop_move_obstructed_opposite_colour_piece()
+
+TPQ.test_queen_move_unobstructed()
+TPQ.test_queen_move_unobstructed_out_of_bounds()
+TPQ.test_queen_move_obstructed_same_colour_piece()
+TPQ.test_queen_move_obstructed_opposite_colour_piece()
+
+TPKG.test_king_move_unobstructed()
+TPKG.test_king_move_unobstructed_out_of_bounds()
+TPKG.test_king_move_obstructed_same_colour_piece()
+TPKG.test_king_move_obstructed_opposite_colour_piece()
+TPKG.test_cannot_take_opponent_king()
+TPKG.test_cannot_take_own_king()
