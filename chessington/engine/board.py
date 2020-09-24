@@ -77,3 +77,16 @@ class Board:
             self.set_piece(to_square, moving_piece)
             self.set_piece(from_square, None)
             self.current_player = self.current_player.opponent()
+<<<<<<< Updated upstream
+=======
+        else:
+            pass
+
+    def get_king(self, player):
+        for row in range(BOARD_SIZE):
+            for col in range(BOARD_SIZE):
+                piece = self.board[row][col]
+                if isinstance(piece, King) and piece.player is player:
+                    return piece
+        return None
+>>>>>>> Stashed changes
