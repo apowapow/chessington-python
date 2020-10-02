@@ -295,7 +295,7 @@ class TestKingCannotMoveIntoCheck:
         assert Square.at(2, 4) in moves
         assert Square.at(1, 4) not in moves
         assert Square.at(1, 3) not in moves
-
+ 
     @staticmethod
     def test_king_cannot_move_to_check_by_king():
         # Arrange
@@ -335,5 +335,165 @@ class TestKingCannotMoveIntoCheck:
         assert Square.at(1, 5) in moves_black
         assert len(moves_black) == 5
 
-    # class TestPieceCannotMoveAndPutOwnKingIntoCheck:
-    # class TestCheckMate:
+class TestPieceCannotMoveAndPutOwnKingIntoCheck:
+    @staticmethod
+    def test_white_pawn_cannot_move_to_check_white_king():
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        king_square = Square.at(0, 4)
+        board.set_piece(king_square, king)
+
+        friend = Pawn(Player.WHITE)
+        friend_square = Square.at(1, 4)
+        board.set_piece(friend_square, friend)
+
+        enemy_rook = Rook(Player.BLACK)
+        enemy_rook_square = Square.at(4, 4)
+        board.set_piece(enemy_rook_square, enemy_rook)
+
+        enemy_pawn = Pawn(Player.BLACK)
+        enemy_pawn_square = Square.at(2,5)
+        board.set_piece(enemy_pawn_square, enemy_pawn)
+
+        # Act
+        moves = friend.get_available_moves(board)
+            
+        # Assert
+        assert Square.at(2, 4) in moves
+        assert Square.at(3, 4) in moves
+        assert Square.at(2, 3) not in moves
+        assert Square.at(2, 5) not in moves
+        assert len(moves) == 2
+
+    @staticmethod
+    def test_white_knight_cannot_move_to_check_white_king():
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        king_square = Square.at(0, 4)
+        board.set_piece(king_square, king)
+
+        friend = Knight(Player.WHITE)
+        friend_square = Square.at(1, 5)
+        board.set_piece(friend_square, friend)
+
+        enemy = Bishop(Player.BLACK)
+        enemy_square = Square.at(3, 7)
+        board.set_piece(enemy_square, enemy)
+
+        # Act
+        moves = friend.get_available_moves(board)
+            
+        # Assert
+        assert len(moves) == 0
+
+    @staticmethod
+    def test_white_rook_cannot_move_to_check_white_king():
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        king_square = Square.at(0, 4)
+        board.set_piece(king_square, king)
+
+        friend = Rook(Player.WHITE)
+        friend_square = Square.at(2, 4)
+        board.set_piece(friend_square, friend)
+
+        enemy = Rook(Player.BLACK)
+        enemy_square = Square.at(4, 4)
+        board.set_piece(enemy_square, enemy)
+
+        # Act
+        moves = friend.get_available_moves(board)
+
+        # Assert
+        assert len(moves) == 3
+        assert Square.at(3, 4) in moves
+        assert Square.at(4, 4) in moves
+        assert Square.at(2, 5) not in moves
+        assert Square.at(2, 3) not in moves
+        assert Square.at(1, 4) in moves
+
+    @staticmethod
+    def test_white_bishop_cannot_move_to_check_white_king():
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        king_square = Square.at(0, 4)
+        board.set_piece(king_square, king)
+
+        friend = Bishop(Player.WHITE)
+        friend_square = Square.at(2, 4)
+        board.set_piece(friend_square, friend)
+
+        enemy = Rook(Player.BLACK)
+        enemy_square = Square.at(4, 4)
+        board.set_piece(enemy_square, enemy)
+
+        # Act
+        moves = friend.get_available_moves(board)
+
+        # Assert
+        assert len(moves) == 0
+
+    @staticmethod
+    def test_white_queen_cannot_move_to_check_white_king_1():
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        king_square = Square.at(0, 4)
+        board.set_piece(king_square, king)
+
+        friend = Queen(Player.WHITE)
+        friend_square = Square.at(2, 4)
+        board.set_piece(friend_square, friend)
+
+        enemy = Rook(Player.BLACK)
+        enemy_square = Square.at(4, 4)
+        board.set_piece(enemy_square, enemy)
+
+        # Act
+        moves = friend.get_available_moves(board)
+
+        # Assert
+        assert len(moves) == 3
+        assert Square.at(3, 4) in moves
+        assert Square.at(4, 4) in moves
+        assert Square.at(2, 5) not in moves
+        assert Square.at(2, 3) not in moves
+        assert Square.at(1, 4) in moves
+
+    @staticmethod
+    def test_white_queen_cannot_move_to_check_white_king_2():
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        king_square = Square.at(0, 4)
+        board.set_piece(king_square, king)
+
+        friend = Queen(Player.WHITE)
+        friend_square = Square.at(1, 5)
+        board.set_piece(friend_square, friend)
+
+        enemy = Bishop(Player.BLACK)
+        enemy_square = Square.at(3, 7)
+        board.set_piece(enemy_square, enemy)
+
+        # Act
+        moves = friend.get_available_moves(board)
+
+        # Assert
+        assert len(moves) == 2
+        assert Square.at(2, 5) not in moves
+        assert Square.at(2, 6) in moves
+        assert Square.at(3, 7) in moves
+        assert Square.at(1, 6) not in moves
+        assert Square.at(0, 6) not in moves
+        assert Square.at(0, 5) not in moves
+        assert Square.at(0, 4) not in moves
+        assert Square.at(1, 4) not in moves
+        assert Square.at(2, 4) not in moves
+
+
+# class TestCheckMate:

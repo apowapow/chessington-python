@@ -1,5 +1,6 @@
 from tests.test_checkmate import TestKingIsInCheck as Test1
 from tests.test_checkmate import TestKingCannotMoveIntoCheck as Test2
+from tests.test_checkmate import TestPieceCannotMoveAndPutOwnKingIntoCheck as Test3
 import tests.test_board as TestB
 from tests.test_pieces import TestPawns as TPP
 from tests.test_pieces import TestKnight as TPK
@@ -22,6 +23,13 @@ Test2.test_king_cannot_move_to_check_by_bishop()
 Test2.test_king_cannot_move_to_check_by_knight()
 Test2.test_king_cannot_move_to_check_by_queen()
 Test2.test_king_cannot_move_to_check_by_king()
+
+Test3.test_white_pawn_cannot_move_to_check_white_king()
+Test3.test_white_knight_cannot_move_to_check_white_king()
+Test3.test_white_rook_cannot_move_to_check_white_king()
+Test3.test_white_bishop_cannot_move_to_check_white_king()
+Test3.test_white_queen_cannot_move_to_check_white_king_1()
+Test3.test_white_queen_cannot_move_to_check_white_king_2()
 
 TestB.test_new_board_has_black_pieces_at_top()
 TestB.test_new_board_has_white_pieces_at_bottom()
