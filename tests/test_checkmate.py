@@ -496,4 +496,165 @@ class TestPieceCannotMoveAndPutOwnKingIntoCheck:
         assert Square.at(2, 4) not in moves
 
 
-# class TestCheckMate:
+class TestCheckMate:
+    @staticmethod
+    def test_black_king_in_checkmate_1():
+        # Arrange
+        board = Board.empty()
+        black_king = King(Player.BLACK)
+        black_king_square = Square.at(7, 6)
+        board.set_piece(black_king_square, black_king)
+
+        black_rook = Rook(Player.BLACK)
+        black_rook_square = Square.at(7, 7)
+        board.set_piece(black_rook_square, black_rook)
+
+        black_knight = Knight(Player.BLACK)
+        black_knight_square = Square.at(7, 5)
+        board.set_piece(black_knight_square, black_knight)
+
+        black_pawn_1 = Pawn(Player.BLACK)
+        black_pawn_1_square = Square.at(6, 5)
+        board.set_piece(black_pawn_1_square, black_pawn_1)
+
+        black_pawn_2 = Pawn(Player.BLACK)
+        black_pawn_2_square = Square.at(6, 6)
+        board.set_piece(black_pawn_2_square, black_pawn_2)
+
+        black_pawn_3 = Pawn(Player.BLACK)
+        black_pawn_3_square = Square.at(6, 7)
+        board.set_piece(black_pawn_3_square, black_pawn_3)
+
+        white_knight = Knight(Player.WHITE)
+        white_knight_square = Square.at(6, 4)
+        board.set_piece(white_knight_square, white_knight)
+
+        white_king = King(Player.WHITE)
+        white_king_square = Square.at(1, 4)
+        board.set_piece(white_king_square, white_king)
+
+        # Act
+        check = black_king.is_in_check(board)
+        moves_black_king = black_king.get_available_moves(board)
+        moves_black_knight = black_king.get_available_moves(board)
+        moves_black_rook = black_rook.get_available_moves(board)
+        moves_black_pawn_1 = black_pawn_1.get_available_moves(board)
+        moves_black_pawn_2 = black_pawn_2.get_available_moves(board)
+        moves_black_pawn_3 = black_pawn_3.get_available_moves(board)
+
+        # Assert
+        assert check == True
+        assert len(moves_black_king) == 0
+        assert len(moves_black_knight) == 0
+        assert len(moves_black_rook) == 0
+        assert len(moves_black_pawn_1) == 0
+        assert len(moves_black_pawn_2) == 0
+        assert len(moves_black_pawn_3) == 0
+
+    @staticmethod
+    def test_black_king_in_checkmate_2():
+        # Arrange
+        board = Board.empty()
+        black_king = King(Player.BLACK)
+        black_king_square = Square.at(7, 6)
+        board.set_piece(black_king_square, black_king)
+
+        black_rook = Rook(Player.BLACK)
+        black_rook_square = Square.at(7, 7)
+        board.set_piece(black_rook_square, black_rook)
+
+        black_bishop = Bishop(Player.BLACK)
+        black_bishop_square = Square.at(7, 5)
+        board.set_piece(black_bishop_square, black_bishop)
+
+        black_pawn_1 = Pawn(Player.BLACK)
+        black_pawn_1_square = Square.at(5, 5)
+        board.set_piece(black_pawn_1_square, black_pawn_1)
+
+        black_pawn_2 = Pawn(Player.BLACK)
+        black_pawn_2_square = Square.at(6, 6)
+        board.set_piece(black_pawn_2_square, black_pawn_2)
+
+        black_pawn_3 = Pawn(Player.BLACK)
+        black_pawn_3_square = Square.at(6, 7)
+        board.set_piece(black_pawn_3_square, black_pawn_3)
+
+        white_bishop = Bishop(Player.WHITE)
+        white_bishop_square = Square.at(1, 0)
+        board.set_piece(white_bishop_square, white_bishop)
+
+        white_king = King(Player.WHITE)
+        white_king_square = Square.at(1, 4)
+        board.set_piece(white_king_square, white_king)
+
+        # Act
+        check = black_king.is_in_check(board)
+        moves_black_king = black_king.get_available_moves(board)
+        moves_black_bishop = black_bishop.get_available_moves(board)
+        moves_black_rook = black_rook.get_available_moves(board)
+        moves_black_pawn_1 = black_pawn_1.get_available_moves(board)
+        moves_black_pawn_2 = black_pawn_2.get_available_moves(board)
+        moves_black_pawn_3 = black_pawn_3.get_available_moves(board)
+
+        # Assert
+        assert check
+        assert len(moves_black_king) == 0
+        assert len(moves_black_bishop) == 0
+        assert len(moves_black_rook) == 0
+        assert len(moves_black_pawn_1) == 0
+        assert len(moves_black_pawn_2) == 0
+        assert len(moves_black_pawn_3) == 0
+
+    @staticmethod
+    def test_black_king_in_checkmate_3():
+        # Arrange
+        board = Board.empty()
+        black_king = King(Player.BLACK)
+        black_king_square = Square.at(7, 6)
+        board.set_piece(black_king_square, black_king)
+
+        black_knight = Knight(Player.BLACK)
+        black_knight_square = Square.at(4, 2)
+        board.set_piece(black_knight_square, black_knight)
+
+        black_bishop = Bishop(Player.BLACK)
+        black_bishop_square = Square.at(2, 0)
+        board.set_piece(black_bishop_square, black_bishop)
+
+        black_pawn_1 = Pawn(Player.BLACK)
+        black_pawn_1_square = Square.at(6, 5)
+        board.set_piece(black_pawn_1_square, black_pawn_1)
+
+        black_pawn_2 = Pawn(Player.BLACK)
+        black_pawn_2_square = Square.at(6, 6)
+        board.set_piece(black_pawn_2_square, black_pawn_2)
+
+        black_pawn_3 = Pawn(Player.BLACK)
+        black_pawn_3_square = Square.at(6, 7)
+        board.set_piece(black_pawn_3_square, black_pawn_3)
+
+        white_rook = Rook(Player.WHITE)
+        white_rook_square = Square.at(7, 3)
+        board.set_piece(white_rook_square, white_rook)
+
+        white_king = King(Player.WHITE)
+        white_king_square = Square.at(1, 4)
+        board.set_piece(white_king_square, white_king)
+
+        # Act
+        check = black_king.is_in_check(board)
+        moves_black_king = black_king.get_available_moves(board)
+        moves_black_bishop = black_bishop.get_available_moves(board)
+        moves_black_knight = black_knight.get_available_moves(board)
+        moves_black_pawn_1 = black_pawn_1.get_available_moves(board)
+        moves_black_pawn_2 = black_pawn_2.get_available_moves(board)
+        moves_black_pawn_3 = black_pawn_3.get_available_moves(board)
+
+        # Assert
+        assert check
+        assert len(moves_black_king) == 0
+        assert len(moves_black_bishop) == 0
+        assert len(moves_black_knight) == 0
+        assert len(moves_black_pawn_1) == 0
+        assert len(moves_black_pawn_2) == 0
+        assert len(moves_black_pawn_3) == 0

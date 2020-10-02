@@ -94,7 +94,12 @@ class Piece(ABC):
                                 squarelist.append(square)
                     return True  # any colour is obstruction
             else:
-                return False  # an illegal move should not stop get lat or dia from looking in that direction
+                piece = board.get_piece(square)
+                if piece is None:
+                    return False  # an illegal move should not stop get lat or dia from looking in that direction
+                else:
+                    return True  # an obstruction should stop lat or dia from looking in that direction
+
         else:
             return True  # walls of board are also obstructions
 
